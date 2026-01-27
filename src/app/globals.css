@@ -1,26 +1,16 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+.btn {
+  @apply px-4 py-2 bg-blue-600 text-white rounded-xl;
 }
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.btn-outline {
+  @apply px-4 py-2 border rounded-xl;
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.input {
+  @apply w-full px-4 py-2 border rounded-xl;
 }
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.nav-link {
+  @apply text-sm text-gray-700 hover:text-blue-600 transition;
 }
