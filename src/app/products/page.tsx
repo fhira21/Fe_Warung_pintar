@@ -6,20 +6,16 @@ import {
   getAllProducts,
   createProduct,
   updateProduct,
-  upsertSellPrice
+  upsertSellPrice,
 } from "@/lib/api";
 
 type Product = {
-  product_id: number
-  code: string
-  name: string
-
-  sell_price_id: number | null
-  sell_price: number | null
-  sell_unit: string | null
-
-}
-
+  product_id: number;
+  name: string;
+  sell_price_id: number | null;
+  sell_price: number | null;
+  sell_unit: string | null;
+};
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -30,7 +26,6 @@ export default function ProductsPage() {
   const [form, setForm] = useState({
     id: null as number | null,
     sell_price_id: null as number | null,
-    code: "",
     name: "",
     price: "",
     unit: "pcs",
@@ -53,10 +48,8 @@ export default function ProductsPage() {
   const handleSearch = (q: string) => {
     const keyword = q.toLowerCase();
     setFiltered(
-      products.filter(
-        (p) =>
-          p.name.toLowerCase().includes(keyword) ||
-          p.code.toLowerCase().includes(keyword)
+      products.filter((p) =>
+        p.name.toLowerCase().includes(keyword)
       )
     );
   };
@@ -66,7 +59,6 @@ export default function ProductsPage() {
     setForm({
       id: null,
       sell_price_id: null,
-      code: "",
       name: "",
       price: "",
       unit: "pcs",
@@ -76,36 +68,36 @@ export default function ProductsPage() {
 
   /* ================= SUBMIT ================= */
   const submit = async () => {
-    if (!form.code || !form.name || !form.price) {
-      alert("Lengkapi data");
+    if (!form.name.trim()) {
+      alert("Nama produk wajib diisi");
       return;
     }
 
     try {
       let productId = form.id;
 
-      // CREATE PRODUCT
+      // CREATE
       if (!productId) {
         const product = await createProduct({
-          code: form.code,
           name: form.name,
         });
-        productId = product.id;
+        productId = product.product_id;
       }
-      // UPDATE PRODUCT
+      // UPDATE
       else {
         await updateProduct(productId, {
-          code: form.code,
           name: form.name,
         });
       }
 
-      // UPSERT SELL PRICE (AMAN)
-      await upsertSellPrice({
-        product_id: productId!,
-        price: Number(form.price),
-        unit: form.unit,
-      });
+      // SELL PRICE OPSIONAL
+      if (form.price) {
+        await upsertSellPrice({
+          product_id: productId!,
+          price: Number(form.price),
+          unit: form.unit,
+        });
+      }
 
       resetForm();
       loadData();
@@ -115,12 +107,12 @@ export default function ProductsPage() {
     }
   };
 
-
   /* ================= UI ================= */
   return (
     <main className="min-h-screen p-6">
       <div className="max-w-6xl mx-auto space-y-6">
 
+        {/* HEADER */}
         <div className="bg-white p-4 md:p-6 rounded-xl flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 className="text-xl md:text-2xl font-bold">
@@ -135,16 +127,17 @@ export default function ProductsPage() {
           </button>
         </div>
 
+        {/* SEARCH */}
         <div className="bg-white p-4 rounded-xl">
           <SearchInput onSearch={handleSearch} />
         </div>
 
+        {/* TABLE */}
         <div className="bg-white rounded-xl overflow-hidden">
           <table className="w-full text-sm">
             <thead className="bg-gray-50">
               <tr>
-                <th className="p-3 text-left">Kode</th>
-                <th className="p-3 text-left">Nama</th>
+                <th className="p-3 text-left">Nama Produk</th>
                 <th className="p-3 text-left">Harga Jual</th>
                 <th className="p-3 text-left">Unit</th>
                 <th className="p-3 text-center">Aksi</th>
@@ -153,31 +146,26 @@ export default function ProductsPage() {
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="p-6 text-center text-gray-500">
+                  <td colSpan={4} className="p-6 text-center text-gray-500">
                     Memuat data...
                   </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="p-6 text-center text-gray-500">
+                  <td colSpan={4} className="p-6 text-center text-gray-500">
                     Data tidak ditemukan
                   </td>
                 </tr>
               ) : (
                 filtered.map((p) => (
                   <tr key={p.product_id} className="border-t">
-                    <td className="p-3">{p.code}</td>
                     <td className="p-3">{p.name}</td>
                     <td className="p-3">
                       {p.sell_price
                         ? `Rp ${p.sell_price.toLocaleString()}`
-                        : "-"
-                      }
+                        : "-"}
                     </td>
-
-                    <td className="p-3">
-                      {p.sell_unit ?? "-"}
-                    </td>
+                    <td className="p-3">{p.sell_unit ?? "-"}</td>
                     <td className="p-3 text-center">
                       <button
                         className="btn-outline"
@@ -185,9 +173,10 @@ export default function ProductsPage() {
                           setForm({
                             id: p.product_id,
                             sell_price_id: p.sell_price_id,
-                            code: p.code,
                             name: p.name,
-                            price: p.sell_price ? String(p.sell_price) : "",
+                            price: p.sell_price
+                              ? String(p.sell_price)
+                              : "",
                             unit: p.sell_unit ?? "pcs",
                           });
                           setShowForm(true);
@@ -203,6 +192,7 @@ export default function ProductsPage() {
           </table>
         </div>
 
+        {/* MODAL */}
         {showForm && (
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
             <div className="bg-white p-6 rounded-xl w-full max-w-md space-y-4">
@@ -210,24 +200,31 @@ export default function ProductsPage() {
                 {form.id ? "Edit Produk" : "Tambah Produk"}
               </h2>
 
-              <input className="input" placeholder="Kode Produk"
-                value={form.code}
-                onChange={(e) => setForm({ ...form, code: e.target.value })}
-              />
-
-              <input className="input" placeholder="Nama Produk"
+              <input
+                className="input"
+                placeholder="Nama Produk *"
                 value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, name: e.target.value })
+                }
               />
 
-              <input type="number" className="input" placeholder="Harga Jual"
+              <input
+                type="number"
+                className="input"
+                placeholder="Harga Jual (opsional)"
                 value={form.price}
-                onChange={(e) => setForm({ ...form, price: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, price: e.target.value })
+                }
               />
 
-              <select className="input"
+              <select
+                className="input"
                 value={form.unit}
-                onChange={(e) => setForm({ ...form, unit: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, unit: e.target.value })
+                }
               >
                 <option value="pcs">PCS</option>
                 <option value="dus">DUS</option>
@@ -235,7 +232,10 @@ export default function ProductsPage() {
               </select>
 
               <div className="flex gap-2">
-                <button className="btn-outline flex-1" onClick={resetForm}>
+                <button
+                  className="btn-outline flex-1"
+                  onClick={resetForm}
+                >
                   Batal
                 </button>
                 <button className="btn flex-1" onClick={submit}>
