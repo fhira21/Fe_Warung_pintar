@@ -34,14 +34,12 @@ export async function getProductslist() {
   return data;
 }
 
-
 export async function createProduct(payload: {
-  code: string;
   name: string;
 }) {
   const { data, error } = await supabase
     .from("products")
-    .insert(payload)
+    .insert({ name: payload.name })
     .select()
     .single();
 
@@ -134,18 +132,6 @@ export async function deleteSupplier(id: number) {
   if (error) throw error;
 }
 
-/* ================= CATALOG ================= */
-
-export async function getCatalog() {
-  const { data, error } = await supabase
-    .from("catalog_view")
-    .select("*")
-    .order("product_id", { ascending: true });
-
-  if (error) throw error;
-  return data;
-}
-
 /* ================= BASE PRICE ================= */
 
 export async function createBasePrice(payload: {
@@ -183,7 +169,6 @@ export async function deleteBasePrice(id: number) {
     .eq("id", id);
 
   if (error) throw error;
-}
 }
 
 /* ================= DROPDOWN DATA ================= */
