@@ -112,7 +112,7 @@ export default function CatalogPage() {
         {/* HEADER */}
         <div className="bg-white p-4 md:p-6 rounded-xl flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold">Manajemen Catalog</h1>
+            <h1 className="text-2xl font-bold">Manajemen Harga Dasar</h1>
             <p className="text-sm text-gray-500">
               Harga dasar produk dari supplier
             </p>
