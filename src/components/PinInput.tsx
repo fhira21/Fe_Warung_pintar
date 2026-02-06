@@ -21,7 +21,7 @@ export default function PinInput({
   const submit = () => {
     if (pin === PIN_CODE) {
       localStorage.setItem("auth", "true");
-      router.push("/products");
+      router.push("/catalog");
     } else {
       setError("PIN salah");
     }
