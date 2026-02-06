@@ -1,36 +1,133 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📦 Sistem Manajemen Produk & Supplier
 
-## Getting Started
+Aplikasi web untuk mengelola **produk, harga jual, supplier, dan harga dasar (base price)** berbasis **Next.js + Supabase**.  
+Dirancang untuk kebutuhan manajemen data toko atau usaha kecil-menengah dengan UI sederhana dan responsif.
 
-First, run the development server:
+---
 
+## 🚀 Fitur Utama
+
+### 🛒 Manajemen Produk
+- CRUD produk
+- Harga jual (sell price) per produk
+- Unit harga (pcs, dus, kg, dll)
+- Pencarian produk (kode / nama)
+
+### 🧾 Manajemen Supplier
+- CRUD supplier
+- Informasi supplier:
+  - Nama
+  - No. Telepon (opsional)
+  - Alamat (opsional)
+- Pencarian supplier
+
+### 📊 Catalog / Base Price
+- Satu produk bisa memiliki **lebih dari satu harga dasar**
+- Harga dasar bisa berasal dari **supplier berbeda**
+- Supplier boleh dikosongkan (opsional)
+- Dropdown produk & supplier dengan fitur search
+- Edit & hapus base price
+- Tampilan rapi (bukan seperti deskripsi panjang)
+
+### 🔍 Search & UX
+- Search realtime (tanpa tombol)
+- Konsisten di semua halaman
+- UI responsive (desktop & mobile)
+- Modal form untuk create / edit
+
+---
+
+## 🧱 Teknologi yang Digunakan
+
+### Frontend
+- **Next.js (App Router)**
+- **React**
+- **Tailwind CSS**
+
+### Backend / Database
+- **Supabase**
+  - PostgreSQL
+  - Table & View (catalog_view)
+  - Relasi antar tabel
+
+---
+
+## 🗂️ Struktur Database (Ringkas)
+
+### Tabel:
+- `products`
+- `sell_prices`
+- `suppliers`
+- `base_prices`
+
+### View:
+- `catalog_view`  
+  Digunakan untuk mengambil data gabungan:
+  - Produk
+  - Harga jual
+  - Harga dasar
+  - Supplier
+
+---
+
+## ⚙️ Instalasi & Setup
+
+### 1️⃣ Clone Repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/username/nama-repo.git
+cd nama-repo
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2️⃣ Install Dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3️⃣ Konfigurasi Environment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Buat file `.env.local`:
 
-## Learn More
+```
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 4️⃣ Jalankan Aplikasi
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Akses di browser : **[http://localhost:3000]**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 📁 Halaman Aplikasi
 
-## Deploy on Vercel
+| Halaman      | Deskripsi                          |
+| ------------ | ---------------------------------- |
+| `/`          | Homepage                           |
+| `/products`  | Manajemen Produk                   |
+| `/suppliers` | Manajemen Supplier                 |
+| `/catalog`   | Manajemen Harga Dasar (Base Price) |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 📌 Catatan Penting
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+* Harga jual & base price dipisah tabel untuk fleksibilitas
+* Semua data diambil via Supabase client
+* Tidak menggunakan backend server terpisah
+* Cocok untuk deployment Vercel + Supabase
+
+### 🌍 Deployment
+
+* Frontend: Vercel
+* Database: Supabase
+
+### 📄 Lisensi
+
+Proyek ini bersifat open-source dan bebas digunakan untuk pengembangan pribadi atau pembelajaran.
+
+## 🧑‍💻 **Pengembang**
+
+**Fhira Triana M**
+Mobile & Web Developer
+Universitas Ahmad Dahlan
+
+GitHub: [https://github.com/fhira21](https://github.com/fhira21)
