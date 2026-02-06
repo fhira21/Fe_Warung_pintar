@@ -18,18 +18,34 @@ type CatalogItem = {
 
 export default function OverviewPage() {
   const [data, setData] = useState<CatalogItem[]>([]);
+  const [filtered, setFiltered] = useState<CatalogItem[]>([]);
+  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+
 
   const loadData = async () => {
     setLoading(true);
     const res = await getCatalog();
     setData(res);
+    setFiltered(res);
     setLoading(false);
   };
 
   useEffect(() => {
     loadData();
   }, []);
+
+  const handleSearch = (q: string) => {
+    setSearch(q);
+    const keyword = q.toLowerCase();
+
+    setFiltered(
+      data.filter((item) =>
+        item.name.toLowerCase().includes(keyword)
+      )
+    );
+  };
+
 
   return (
     <main className="min-h-screen p-6 bg-gray-100">
@@ -41,6 +57,16 @@ export default function OverviewPage() {
           <p className="text-sm text-gray-500">
             Perbandingan harga beli dan harga jual per produk
           </p>
+        </div>
+
+        {/* SEARCH */}
+        <div className="bg-white p-4 rounded-xl">
+          <input
+            className="input w-full"
+            placeholder="Cari produk..."
+            value={search}
+            onChange={(e) => handleSearch(e.target.value)}
+          />
         </div>
 
         {/* TABLE */}
@@ -60,22 +86,17 @@ export default function OverviewPage() {
                     Memuat data...
                   </td>
                 </tr>
-              ) : data.length === 0 ? (
+              ) : filtered.length === 0 ? (
                 <tr>
                   <td colSpan={3} className="p-6 text-center text-gray-500">
-                    Tidak ada data
+                    Data tidak ditemukan
                   </td>
                 </tr>
               ) : (
-                data.map((item) => (
+                filtered.map((item) => (
                   <tr key={item.product_id} className="border-t align-top">
-                    
-                    {/* NAMA PRODUK */}
-                    <td className="p-4 font-medium">
-                      {item.name}
-                    </td>
+                    <td className="p-4 font-medium">{item.name}</td>
 
-                    {/* HARGA DASAR */}
                     <td className="p-4 space-y-1">
                       {item.base_prices.length === 0 ? (
                         <span className="italic text-gray-400">
@@ -83,10 +104,7 @@ export default function OverviewPage() {
                         </span>
                       ) : (
                         item.base_prices.map((bp) => (
-                          <div
-                            key={bp.id}
-                            className="text-gray-700"
-                          >
+                          <div key={bp.id}>
                             Rp {bp.price.toLocaleString()}/{bp.unit}
                             <span className="text-gray-400">
                               {" "}
@@ -99,19 +117,15 @@ export default function OverviewPage() {
                       )}
                     </td>
 
-                    {/* HARGA JUAL */}
                     <td className="p-4 font-semibold">
                       {item.sell_price ? (
-                        <>
-                          Rp {item.sell_price.toLocaleString()}/{item.sell_unit}
-                        </>
+                        `Rp ${item.sell_price.toLocaleString()}/${item.sell_unit}`
                       ) : (
                         <span className="italic text-gray-400">
                           Belum diatur
                         </span>
                       )}
                     </td>
-
                   </tr>
                 ))
               )}
