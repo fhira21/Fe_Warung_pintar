@@ -1,5 +1,17 @@
 import { supabase } from "./supabase";
 
+/* ================= CATALOG ================= */
+
+export async function getCatalog() {
+  const { data, error } = await supabase
+    .from("catalog_view")
+    .select("*")
+    .order("product_id");
+
+  if (error) throw error;
+  return data;
+}
+
 /* ================= PRODUCTS ================= */
 
 export async function getAllProducts() {
@@ -11,6 +23,17 @@ export async function getAllProducts() {
   if (error) throw error;
   return data;
 }
+
+export async function getProductslist() {
+  const { data, error } = await supabase
+    .from("products")
+    .select("id, name")
+    .order("id");
+
+  if (error) throw error;
+  return data;
+}
+
 
 export async function createProduct(payload: {
   code: string;
@@ -152,6 +175,7 @@ export async function updateBasePrice(id: number, payload: any) {
   if (error) throw error;
 }
 
+
 export async function deleteBasePrice(id: number) {
   const { error } = await supabase
     .from("base_prices")
@@ -159,6 +183,7 @@ export async function deleteBasePrice(id: number) {
     .eq("id", id);
 
   if (error) throw error;
+}
 }
 
 /* ================= DROPDOWN DATA ================= */
