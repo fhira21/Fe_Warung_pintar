@@ -22,14 +22,17 @@ export default function TopBar() {
 
           {/* Desktop Menu */}
           <nav className="hidden md:flex gap-4">
+            <Link href="/catalog" className="nav-link">
+              Catalog
+            </Link>
             <Link href="/products" className="nav-link">
               Produk
             </Link>
             <Link href="/suppliers" className="nav-link">
               Supplier
             </Link>
-            <Link href="/catalog" className="nav-link">
-              Catalog
+            <Link href="/baseprice" className="nav-link">
+              Base Price
             </Link>
           </nav>
         </div>
@@ -68,14 +71,17 @@ export default function TopBar() {
       {open && (
         <div className="md:hidden border-t bg-white">
           <nav className="flex flex-col p-4 space-y-3">
+            <Link href="/catalog" onClick={() => setOpen(false)}>
+              Catalog
+            </Link>
             <Link href="/products" onClick={() => setOpen(false)}>
               Produk
             </Link>
             <Link href="/suppliers" onClick={() => setOpen(false)}>
               Supplier
             </Link>
-            <Link href="/catalog" onClick={() => setOpen(false)}>
-              Catalog
+            <Link href="/baseprice" onClick={() => setOpen(false)}>
+              Base Price
             </Link>
 
             <hr />
